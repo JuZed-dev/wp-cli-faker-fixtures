@@ -20,7 +20,7 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 wp package install git@github.com:nlemoine/wp-cli-fixtures.git
 ```
 
-Requires PHP `^7.3`.
+Requires PHP `^8.0`.
 
 ## Usage
 
