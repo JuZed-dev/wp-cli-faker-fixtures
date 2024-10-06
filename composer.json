@@ -1,7 +1,7 @@
 {
   "name": "juzed-dev/wp-cli-faker-fixtures",
   "description": "Easily generate fake data for WordPress with Faker and WP cli",
-  "license": "GPL-3.0+",
+  "license": "GPL-3.0-or-later",
   "type": "wp-cli-package",
   "authors": [
     {
