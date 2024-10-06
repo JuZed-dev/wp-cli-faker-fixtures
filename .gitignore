@@ -1,3 +1,4 @@
 wp-cli.local.yml
 vendor/
 composer.lock
+.idea
