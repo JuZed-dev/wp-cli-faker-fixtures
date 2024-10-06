@@ -1,0 +1,179 @@
+#
+# USERS
+#
+JuZedDev\Fixtures\Entity\User:
+  user{1..10}:
+    user_login (unique): <username()> # '(unique)' is required
+    user_pass: 123456
+    user_email: <safeEmail()>
+    user_url: <url()>
+    user_registered: <dateTimeThisDecade()>
+    first_name: <firstName()>
+    last_name: <lastName()>
+    description: <sentence()>
+    role: <randomElement(['subscriber', 'editor'])>
+    meta:
+      phone_number: <phoneNumber()>
+      address: <streetAddress()>
+      zip: <postcode()>
+      city: <city()>
+    acf:
+      facebook_url: <url()>
+      twitter_url: <url()>
+
+#
+# ATTACHMENTS
+#
+JuZedDev\Fixtures\Entity\Attachment:
+  default (template): # templates can be extended to keep things DRY
+    post_title: <words(2, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+  images{1..15} (extends default):
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required, image() is the default faker provider and gets images from lorempixel.
+  pics{1..15} (extends default):
+    file: <picsum(<uploadDir()>, 1200, 1200)> # Alternatively we provide a picsum() provider which uses picsum for images. It's quicker but doesn't support image categories.
+  documents{1..2} (extends default):
+    file: <fileIn('relative/path/to/pdfs')>
+  custom_images{1..10} (extends default):
+    file: <fileIn('relative/path/to/images')>
+
+#
+# TERMS
+#
+JuZedDev\Fixtures\Entity\Term:
+  category{1..10}:
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
+    parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
+    taxonomy: 'category' # could be skipped, default to 'category'
+  tag{1..40}:
+    __construct: ['post_tag'] # This is required to ensure the dynamic parent field above doesn't use tags as possible parents
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
+    taxonomy: post_tag
+  places{1..4}: # custom taxonomy
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentences(3, true)>
+    taxonomy: place
+    acf:
+      address: <streetAddress>
+      zip: <postcode()>
+      city: <city()>
+      image: '@custom_images*->ID'
+
+#
+# POSTS
+#
+JuZedDev\Fixtures\Entity\Post:
+
+  # TEMPLATE
+  default (template):
+    post_title: <words(2, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+    post_excerpt: <paragraphs(1, true)>
+    meta:
+      _thumbnail_id: '@attachment*->ID'
+
+  # POSTS
+  post{1..30} (extends default):
+    # 'meta' and 'meta_input' are basically the same, you can use one or both,
+    # they will be merged, just don't provide the same keys in each definition
+    meta:
+      _thumbnail_id: '@attachment*->ID'
+    meta_input:
+      _extra_field: <paragraphs(1, true)>
+    post_category: '3x @category*->term_id' # post_category only accepts IDs
+    tax_input:
+      post_tag: '5x @tag*->term_id'
+      # post_tag: '5x <words(2, true)> # Or tags can be dynamically created
+
+  # PAGES
+  page{contact, privacy}:
+    post_title: <current()>
+    post_type: page
+
+  # CUSTOM POST TYPE
+  product{1..15}:
+    post_type: product
+    acf:
+      # number field
+      price: <numberBetween(10, 200)>
+      # gallery field
+      gallery: '3x @attachment*->ID'
+      # oembed field
+      video: https://www.youtube.com/watch?v=E90_aL870ao
+      # link field
+      link:
+        url: https://www.youtube.com/watch?v=E90_aL870ao
+        title: <words(2, true)>
+        target: _blank
+      # repeater field
+      features:
+        - label: <words(2, true)>
+          value: <sentence()
+        - label: <words(2, true)>
+          value: <sentence()>
+        - label: <words(2, true)>
+          value: <sentence()>
+      # layout field
+      blocks:
+        - acf_fc_layout: text_image
+          title: <words(4, true)>
+          content: <sentences(8, true)>
+          image: '@attachment*->ID'
+        - acf_fc_layout: image_image
+          image_left: '@attachment*->ID'
+          image_right: '@attachment*->ID'
+
+#
+# COMMENTS
+#
+JuZedDev\Fixtures\Entity\Comment:
+  comment{1..50}:
+    comment_post_ID: '@post*->ID'
+    user_id: '@user*->ID'
+    comment_date: <dateTimeThisDecade()>
+    comment_author: <username()>
+    comment_author_email: <safeEmail()>
+    comment_author_url: <url()>
+    comment_content: <paragraphs(2, true)>
+    comment_agent: <userAgent()>
+    comment_author_IP: <ipv4()>
+    comment_approved: 1
+    comment_karma: <numberBetween(1, 100)>
+    # 'meta' and 'comment_meta' are basically the same, you can use one or both,
+    # they will be merged, just don't provide the same keys in each definition
+    comment_meta:
+      some_key: <sentence()>
+    meta:
+      another_key: <sentence()>
+
+#
+#  NAV MENUS
+#
+JuZedDev\Fixtures\Entity\NavMenu:
+  header:
+    name: header
+    locations:
+      - header
+      - footer
+
+#
+#  NAV MENUS ITEMS
+#
+JuZedDev\Fixtures\Entity\NavMenuItem:
+  custom_menu:
+    menu_item_url: <url()>
+    menu_item_title: <words(4, true)>
+    menu_id: '@header->term_id'
+  categories{1..3}:
+    menu_item_object: '@category*'
+    menu_id: '@header->term_id'
+  posts{1..3}:
+    menu_item_object: '@post*'
+    menu_id: '@header->term_id'
+  page:
+    menu_item_object: '@page*'
+    menu_id: '@header->term_id'

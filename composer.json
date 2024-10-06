@@ -1,0 +1,55 @@
+{
+  "name": "juzed-dev/wp-cli-faker-fixtures",
+  "description": "Easily generate fake data for WordPress",
+  "license": "GPL-3.0+",
+  "type": "wp-cli-package",
+  "authors": [
+    {
+      "name": "Julien Zerbib",
+      "email": "contact@juzed.dev",
+      "homepage": "https://github.com/JuZed-dev"
+    }
+  ],
+  "homepage": "https://github.com/JuZed-dev/wp-cli-faker-fixtures",
+  "require": {
+    "php": "^7.3 || ^8.0",
+    "fakerphp/faker": "^1.13",
+    "nelmio/alice": "^3.8",
+    "wp-cli/wp-cli": "^2.4"
+  },
+  "require-dev": {
+    "wp-cli/db-command": "^2.0",
+    "wp-cli/entity-command": "^2.0",
+    "wp-cli/wp-cli-tests": "^3.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "JuZedDev\\Fixtures\\": "src/"
+    },
+    "files": [
+      "command.php"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "process-timeout": 1800
+  },
+  "scripts": {
+    "behat": "run-behat-tests",
+    "behat-rerun": "rerun-behat-tests",
+    "lint": "run-linter-tests",
+    "phpcs": "run-phpcs-tests",
+    "phpunit": "run-php-unit-tests",
+    "prepare-tests": "install-package-tests",
+    "test": [
+      "@lint",
+      "@phpcs",
+      "@phpunit",
+      "@behat"
+    ]
+  }
+}
