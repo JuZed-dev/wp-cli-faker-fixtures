@@ -1,14 +1,12 @@
 wp-cli-fixtures
 =========================
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nlemoine/wp-cli-fixtures/Testing?style=flat-square)](https://github.com/nlemoine/wp-cli-fixtures/actions/workflows/testing.yml?query=branch%3Amaster+workflow%3ATesting)
-![Packagist Downloads](https://img.shields.io/packagist/dt/hellonico/wp-cli-fixtures?style=flat-square)
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/hellonico/wp-cli-fixtures?style=flat-square)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/juzed-dev/wp-cli-faker-fixtures/Testing?style=flat-square)](https://github.com/juzed-dev/wp-cli-faker-fixtures/actions/workflows/testing.yml?query=branch%3Amaster+workflow%3ATesting)
+![Packagist Downloads](https://img.shields.io/packagist/dt/juzed-dev/wp-cli-faker-fixtures?style=flat-square)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/juzed-dev/wp-cli-faker-fixtures?style=flat-square)
 
-Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
+Forked from [wp-cli-fixtures](https://github.com/nlemoine/wp-cli-fixtures), inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
-
-![wp-cli-fixtures demo](https://hellonico.s3.eu-west-1.amazonaws.com/dev/wp-cli-fixtures.gif)
 
 **WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
 
@@ -16,17 +14,23 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 
 ## Install
 
+Using WP cli:
 ```bash
-wp package install git@github.com:nlemoine/wp-cli-fixtures.git
+wp package install git@github.com:JuZed-dev/wp-cli-faker-fixtures.git
 ```
 
-Requires PHP `^8.0`.
+Using composer:
+```bash
+composer require --save-dev juzed-dev/wp-cli-faker-fixtures
+```
+
+Requires PHP `^7.4`.
 
 ## Usage
 
 ### Create fixtures
 
-At the root of your project, create a `fixtures.yml` file (you can download it [here](https://raw.githubusercontent.com/nlemoine/wp-cli-fixtures/master/examples/fixtures.yml)):
+At the root of your project, create a `fixtures.yml` file (you can download it [here](https://raw.githubusercontent.com/JuZed-dev/wp-cli-faker-fixtures/master/examples/fixtures.yml)):
 
 ```yaml
 #
