@@ -12,7 +12,7 @@
   ],
   "homepage": "https://github.com/JuZed-dev/wp-cli-faker-fixtures",
   "require": {
-    "php": "^8.0",
+    "php": "^7.4 || ^8.0",
     "fakerphp/faker": "^1.13",
     "nelmio/alice": "^3.8",
     "wp-cli/wp-cli": "^2.4"
