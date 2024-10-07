@@ -27,7 +27,7 @@ class LorIpsum extends Base
     public function richText(
         int    $num = 5,                   // The number of paragraphs to generate.
         string $format = 'medium',         // short, medium, long, verylong - The average length of a paragraph.
-        array  $options = [],              // Array containing the parameter values as strings
+        array  $options = []               // Array containing the parameter values as strings
     ) {
 
         $baseUrl = sprintf(
