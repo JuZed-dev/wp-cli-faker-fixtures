@@ -61,16 +61,14 @@ JuZedDev\Fixtures\Entity\User:
 #
 JuZedDev\Fixtures\Entity\Attachment:
   default (template): # templates can be extended to keep things DRY
-    post_title: <words(2, true)>
+    post_title: <title(2, true)>
     post_date: <dateTimeThisDecade()>
     post_content: <paragraphs(5, true)>
-  images{1..15} (extends default):
-    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required, image() is the default faker provider and gets images from lorempixel.
-  pics{1..15} (extends default):
-    file: <picsum(<uploadDir()>, 1200, 1200)> # Alternatively we provide a picsum() provider which uses picsum for images. It's quicker but doesn't support image categories.
-  documents{1..2} (extends default):
+  images{1..15} (extends default): # Random Images
+    file: <picsum(<uploadDir()>, 1200, 1200)> # We provide a picsum() provider which uses picsum for images.
+  local_documents{1..2} (extends default): # Random Documents in a local folder
     file: <fileIn('relative/path/to/pdfs')>
-  custom_images{1..10} (extends default):
+  local_images{1..10} (extends default): # Random Images in a local folder
     file: <fileIn('relative/path/to/images')>
 
 #
@@ -78,44 +76,44 @@ JuZedDev\Fixtures\Entity\Attachment:
 #
 JuZedDev\Fixtures\Entity\Term:
   category{1..10}:
-    name (unique): <words(2, true)> # '(unique)' is required
-    description: <sentence()>
+    name (unique): <title(2, true)> # '(unique)' is required
+    description: <richText(1, 'medium', ['decorate'])>
     parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
-    name (unique): <words(2, true)> # '(unique)' is required
-    description: <sentence()>
+    __construct: ['post_tag'] # This is required to ensure the dynamic parent field above doesn't use tags as possible parents
+    name (unique): <title(2, true)> # '(unique)' is required
+    description: <richText(1, 'medium', ['decorate'])>
     taxonomy: post_tag
   places{1..4}: # custom taxonomy
-    name (unique): <words(2, true)> # '(unique)' is required
-    description: <sentences(3, true)>
+    name (unique): <title(2, true)> # '(unique)' is required
+    description: <richText(3, 'medium', ['decorate'])>
     taxonomy: place
     acf:
       address: <streetAddress>
       zip: <postcode()>
       city: <city()>
-      image: '@custom_images*->ID'
+      image: '@local_images*->ID'
 
 #
 # POSTS
 #
 JuZedDev\Fixtures\Entity\Post:
-
   # TEMPLATE
   default (template):
-    post_title: <words(2, true)>
+    post_title: <title(2, true)>
     post_date: <dateTimeThisDecade()>
-    post_content: <paragraphs(5, true)>
+    post_content: <richText(5, 'medium', ['decorate','link','ul','ol','dl','bq','code','headers','prude'])>
     post_excerpt: <paragraphs(1, true)>
     meta:
-      _thumbnail_id: '@attachment*->ID'
+      _thumbnail_id: '@images*->ID'
 
   # POSTS
   post{1..30} (extends default):
     # 'meta' and 'meta_input' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     meta:
-      _thumbnail_id: '@attachment*->ID'
+      _thumbnail_id: '@images*->ID'
     meta_input:
       _extra_field: <paragraphs(1, true)>
     post_category: '3x @category*->term_id' # post_category only accepts IDs
@@ -135,13 +133,13 @@ JuZedDev\Fixtures\Entity\Post:
       # number field
       price: <numberBetween(10, 200)>
       # gallery field
-      gallery: '3x @attachment*->ID'
+      gallery: '3x @images*->ID'
       # oembed field
       video: https://www.youtube.com/watch?v=E90_aL870ao
       # link field
       link:
         url: https://www.youtube.com/watch?v=E90_aL870ao
-        title: <words(2, true)>
+        title: <title(2, true)>
         target: _blank
       # repeater field
       features:
@@ -151,15 +149,15 @@ JuZedDev\Fixtures\Entity\Post:
           value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
-      # layout field
+      # flexible content field
       blocks:
         - acf_fc_layout: text_image
-          title: <words(4, true)>
-          content: <sentences(8, true)>
-          image: '@attachment*->ID'
+          title: <title(4, true)>
+          content: <richText(8, 'medium', ['decorate','link','ul','ol'])>
+          image: '@images*->ID'
         - acf_fc_layout: image_image
-          image_left: '@attachment*->ID'
-          image_right: '@attachment*->ID'
+          image_left: '@images*->ID'
+          image_right: '@images*->ID'
 
 #
 # COMMENTS
@@ -200,7 +198,7 @@ JuZedDev\Fixtures\Entity\NavMenu:
 JuZedDev\Fixtures\Entity\NavMenuItem:
   custom_menu:
     menu_item_url: <url()>
-    menu_item_title: <words(4, true)>
+    menu_item_title: <title(4, true)>
     menu_id: '@header->term_id'
   categories{1..3}:
     menu_item_object: '@category*'
@@ -217,20 +215,25 @@ The example above will generate:
 
 - 10 users
 - 15 attachments
+- 2 PDFs (found locally)
+- 10 images (found locally)
 - 10 categories
 - 40 tags
+- 4 terms for custom taxonomy named 'place'
 - 30 posts with a thumbnail, 3 categories and 5 tags
-- 10 pages
+- 2 pages (Contact and Privacy)
 - 15 custom post types named 'product'
 - 50 comments associated with post and user
 - 1 nav menu
-- 6 nav menu items
+- 8 nav menu items
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.
 
 Example: `Term` or `Attachment` objects **must** be placed before `Post` if you're referencing them in your fixtures.
 
 ### Load fixtures
+
+To load `fixtures.yml`:
 
 ```
 wp fixtures load
@@ -314,7 +317,7 @@ JuZedDev\Fixtures\Entity\Post:
 
 #### Nav menu
 
-`JuZedDev\Fixtures\Entity\NavMenu` is a term just like `JuZedDev\Fixtures\Entity\Term`. It takes an addiotional `locations` parameter to set the menu location.
+`JuZedDev\Fixtures\Entity\NavMenu` is a term just like `JuZedDev\Fixtures\Entity\Term`. It takes an additional `locations` parameter to set the menu location.
 
 ```yaml
 JuZedDev\Fixtures\Entity\NavMenu:
@@ -343,9 +346,9 @@ JuZedDev\Fixtures\Entity\Post:
     post_title: <words(3, true)>
     post_date: <dateTimeThisDecade()>
     acf:
-      # number field
+      # number field named 'number'
       number: <numberBetween(10, 200)>
-      # repeater field
+      # repeater field named 'features'
       features:
         - label: <words(2, true)>
           value: <sentence()
@@ -353,6 +356,15 @@ JuZedDev\Fixtures\Entity\Post:
           value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
+      # flexible content field named 'blocks'
+      blocks:
+        - acf_fc_layout: text_image
+          title: <title(4, true)>
+          content: <richText(8, 'medium', ['decorate','link','ul','ol'])>
+          image: '@images*->ID'
+        - acf_fc_layout: image_image
+          image_left: '@images*->ID'
+          image_right: '@images*->ID'
 ```
 
 Be careful with duplicate field keys, if you have multiple field with the same key, prefer using ACF field key (`field_948d1qj5mn4d3`).
