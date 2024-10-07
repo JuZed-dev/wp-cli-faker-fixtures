@@ -1,4 +1,4 @@
-wp-cli-fixtures
+wp-cli-faker-fixtures
 =========================
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/juzed-dev/wp-cli-faker-fixtures/Testing?style=flat-square)](https://github.com/juzed-dev/wp-cli-faker-fixtures/actions/workflows/testing.yml?query=branch%3Amaster+workflow%3ATesting)
