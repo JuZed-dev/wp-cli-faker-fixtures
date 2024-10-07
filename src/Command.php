@@ -62,7 +62,7 @@ class Command extends WP_CLI_Command
         $generator->addProvider(new LorIpsum($generator));
         $generator->addProvider(new Title($generator));
 
-        WP_CLI::log('Loading fixtures... This might take some time depending on images number and connection speed');
+        WP_CLI::log('Loading fixtures... This might take some time depending on images number, rich texts and connection speed');
 
         // Load file
         $loader = new NativeLoader($generator);
