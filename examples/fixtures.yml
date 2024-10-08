@@ -42,17 +42,17 @@ JuZedDev\Fixtures\Entity\Attachment:
 JuZedDev\Fixtures\Entity\Term:
   category{1..10}:
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(1, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
     __construct: ['post_tag'] # This is required to ensure the dynamic parent field above doesn't use tags as possible parents
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(1, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     taxonomy: post_tag
   places{1..4}: # custom taxonomy
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(3, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     taxonomy: place
     acf:
       address: <streetAddress>

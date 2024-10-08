@@ -6,6 +6,9 @@ wp-cli-faker-fixtures
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/juzed-dev/wp-cli-faker-fixtures?style=flat-square)
 
 Forked from [wp-cli-fixtures](https://github.com/nlemoine/wp-cli-fixtures), inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
+
+It works with [Advanced Custom Fields (Pro)](https://www.advancedcustomfields.com/) and can generate random images with [Picsum](https://picsum.photos/) and rich text with [LorIpsum API](https://loripsum.net/).
+
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
 
 **WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
@@ -77,17 +80,17 @@ JuZedDev\Fixtures\Entity\Attachment:
 JuZedDev\Fixtures\Entity\Term:
   category{1..10}:
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(1, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
     __construct: ['post_tag'] # This is required to ensure the dynamic parent field above doesn't use tags as possible parents
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(1, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     taxonomy: post_tag
   places{1..4}: # custom taxonomy
     name (unique): <title(2, true)> # '(unique)' is required
-    description: <richText(3, 'medium', ['decorate'])>
+    description: <paragraphs(5, true)>
     taxonomy: place
     acf:
       address: <streetAddress>
@@ -269,8 +272,8 @@ Add/update data to post ID 1:
 JuZedDev\Fixtures\Entity\Post:
   my_post:
     __construct: [1] # Pass your post ID as the constructor argument
-    post_title: '<sentence()>'
-    post_content: '<paragraphs(5, true)>'
+    post_title: '<title()>'
+    post_content: '<richText(8, 'medium', ['decorate','link','ul','ol']>'
     post_excerpt: '<paragraphs(1, true)>'
 ```
 
@@ -280,8 +283,8 @@ Add/update data to 10 random existing posts:
 JuZedDev\Fixtures\Entity\Post:
   post{1..10}:
     __construct: [<postId()>] # Use a custom formatters to return a random post ID as the constructor argument
-    post_title: '<sentence()>'
-    post_content: '<paragraphs(5, true)>'
+    post_title: '<title()>'
+    post_content: '<richText(8, 'medium', ['decorate','link','ul','ol']>'
     post_excerpt: '<paragraphs(1, true)>'
 ```
 
@@ -343,7 +346,7 @@ Each ACF supported entity (post, term, user) can have an `acf` key, which works 
 ```yaml
 JuZedDev\Fixtures\Entity\Post:
   post{1..30}:
-    post_title: <words(3, true)>
+    post_title: <title(3, true)>
     post_date: <dateTimeThisDecade()>
     acf:
       # number field named 'number'
@@ -373,7 +376,29 @@ Be careful with duplicate field keys, if you have multiple field with the same k
 
 In addition to formatters provided by [fzaninotto/Faker](https://github.com/fzaninotto/Faker#formatters), you can use custom formatters below.
 
-#### `postId($args)`
+#### Rich Text: `richText($num, $lengt, $options)`
+
+Returns a random Lorem Ipsum rich text.
+
+You can find available options [here](https://loripsum.net/#:~:text=every%20single%20time.-,How%20to%20use%20the%20API,-Just%20do%20a).
+
+Example:
+
+```
+<richText(5, 'medium', ['decorate','link','ul','ol','dl','bq','code','headers','prude'])>
+```
+
+#### Title: `title($nbWords, $variableNbWords)`
+
+Returns a title.
+If `$variableNbWords` is set to true, `$nbWords` can vary.
+
+Example:
+```
+<title(3,false)>
+```
+
+#### Post ID: `postId($args)`
 
 Returns a random existing post ID.
 `$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
@@ -384,7 +409,7 @@ Example:
 <postId(category=1,2,3)>
 ```
 
-#### `attachmentId($args)`
+#### Attachment ID: `attachmentId($args)`
 
 Returns a random existing attachment ID.
 `$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
@@ -395,7 +420,7 @@ Example:
 <attachmentId(year=2016)>
 ```
 
-#### `termId($args)`
+#### Term ID: `termId($args)`
 
 Returns a random existing term ID.
 `$args` is optional and can take any arguments from [`get_terms`](https://developer.wordpress.org/reference/functions/get_terms/#parameters)
@@ -406,7 +431,7 @@ Example:
 <termId(taxonomy=post_tag)>
 ```
 
-#### `userId($args)`
+#### User ID: `userId($args)`
 
 Returns a random existing user ID.
 `$args` is optional and can take any arguments from [`get_users`](https://developer.wordpress.org/reference/functions/get_users/#parameters)
@@ -417,7 +442,7 @@ Example:
 <userId(role=subscriber)>
 ```
 
-#### `fileContent($file)`
+#### File content: `fileContent($file)`
 
 Returns the content of a file.
 
@@ -427,7 +452,7 @@ Example:
 <fileContent('path/to/file.html')>
 ```
 
-#### `fileIn($src, $target, false)`
+#### File in: `fileIn($src, $target, false)`
 
 Wrapper around [file provider](https://github.com/fzaninotto/Faker#fakerproviderfile) because some Faker providers [conflicts with PHP native ](https://github.com/nelmio/alice/blob/master/doc/getting-started.md#symfony). Returns file path or file name in a directory (`$src` relative to `fixtures.yml`).
 

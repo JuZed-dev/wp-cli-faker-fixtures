@@ -8,7 +8,7 @@ class LorIpsum extends Base
 {
     /**
      * @param int    $num     The number of paragraphs to generate.
-     * @param string $format  short, medium, long, verylong - The average length of a paragraph.
+     * @param string $length  short, medium, long, verylong - The average length of a paragraph.
      * @param array  $options Array containing the parameter values as strings:
      *                        - 'decorate'          If present, add bold, italic and marked text.
      *                        - 'link'              If present, add links.
@@ -26,14 +26,14 @@ class LorIpsum extends Base
      */
     public function richText(
         int    $num = 5,                   // The number of paragraphs to generate.
-        string $format = 'medium',         // short, medium, long, verylong - The average length of a paragraph.
+        string $length = 'medium',         // short, medium, long, verylong - The average length of a paragraph.
         array  $options = []               // Array containing the parameter values as strings
     ) {
 
         $baseUrl = sprintf(
             'https://loripsum.net/api/%d/%s/',
             $num,
-            $format
+            $length
         );
 
         // List of valid values
