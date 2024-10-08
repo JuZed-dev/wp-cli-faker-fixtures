@@ -11,7 +11,7 @@ It works with [Advanced Custom Fields (Pro)](https://www.advancedcustomfields.co
 
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
 
-**WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
+**WARNING:** This package is mostly intended to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
 
 Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 
